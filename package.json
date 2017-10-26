@@ -7,7 +7,7 @@
 		"build:dev": "webpack",
 		"build:prod": "webpack -p --env production",
 		"dev-server": "webpack-dev-server",
-		"test": "jest --config=jest-setup.config.json",
+		"test": "jest --config=jest-snap.config.json",
 		"start": "node server/server.js",
 		"heroku-postbuild": "npm run build:prod"
 	},
