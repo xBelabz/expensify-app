@@ -10,6 +10,12 @@ import 'normalize.css/normalize.css';
 import './styles/styles.scss';
 import 'react-dates/lib/css/_datepicker.css';
 
+// Firebase import for testing
+import './firebase/firebase';
+
+// Temporary import
+// import './playground/promises';
+
 /* -------------------------------------------------------------------------
    - Subscribe to any store changes
 ------------------------------------------------------------------------- */
