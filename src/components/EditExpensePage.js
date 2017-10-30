@@ -1,38 +1,39 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { editExpense, removeExpense } from '../redux/actions/expenses';
-
 import ExpenseForm from './ExpenseForm';
+import { startEditExpense, startRemoveExpense } from '../redux/actions/expenses';
 
-const EditExpensePage = (props) => {
-	// console.log(props);
-	return (
-		<div>
-			<ExpenseForm
-				expense={ props.expense }
-				onSubmit={(expense) => {
-					props.dispatch(editExpense(props.expense.id, expense));
-					// Redirect to home page
-					props.history.push('/')
-				}}
-			/>
+export class EditExpensePage extends React.Component {
+	onSubmit = (expense) => {
+		this.props.startEditExpense(this.props.expense.id, expense);
+		this.props.history.push('/');
+	};
 
-			<button onClick={() => {
-				props.dispatch(removeExpense({ id: props.expense.id }));
-				props.history.push('/')
-			}}>Remove</button>
-		</div>
-	);
-};
+	onRemove = () => {
+		this.props.startRemoveExpense({ id: this.props.expense.id });
+		this.props.history.push('/');
+	};
 
-const mapStateToProps = (state, props) => {
-	return {
-		// Array find method, find allows us to search through
-		// an array looking for a single item.
-		// We determine whether or not we found the correct item
-		// by returning true or false from the callback.
-		expense: state.expenses.find((expense) => expense.id === props.match.params.id)
+	render() {
+		return (
+			<div>
+				<ExpenseForm
+					expense={ this.props.expense }
+					onSubmit={ this.onSubmit }
+				/>
+				<button onClick={ this.onRemove }>Remove</button>
+			</div>
+		);
 	}
 };
 
-export default connect(mapStateToProps)(EditExpensePage);
+const mapStateToProps = (state, props) => ({
+	expense: state.expenses.find((expense) => expense.id === props.match.params.id)
+});
+
+const mapDispatchToProps = (dispatch, props) => ({
+	startEditExpense: (id, expense) => dispatch(startEditExpense(id, expense)),
+	startRemoveExpense: (data) => dispatch(startRemoveExpense(data))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditExpensePage);
