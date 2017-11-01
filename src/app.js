@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import { Provider } from 'react-redux';
-import AppRouter from './routers/AppRouter';
+import AppRouter, { history } from './routers/AppRouter';
 import storeConfig from './redux/store/store-config';
 import { startSetExpenses } from "./redux/actions/expenses";
+import { login, logout } from './redux/actions/auth';
 // import { setTextFilter } from "./redux/actions/filters";
 // import getVisibleExpenses from './redux/selectors/expenses';
 import 'normalize.css/normalize.css';
@@ -11,7 +12,7 @@ import './styles/styles.scss';
 import 'react-dates/lib/css/_datepicker.css';
 
 // Firebase import for testing
-import './firebase/firebase';
+import { firebase } from './firebase/firebase';
 
 // Temporary import
 // import './playground/promises';
@@ -52,10 +53,39 @@ const jsx = (
 );
 
 /* -------------------------------------------------------------------------
-   - Print the Dom element
+   - Set app rendering into variable
+------------------------------------------------------------------------- */
+let hasRendered = false;
+const renderApp = () => {
+	if (!hasRendered) {
+		ReactDom.render(jsx, document.getElementById('app'));
+		hasRendered = true
+	}
+};
+
+/* -------------------------------------------------------------------------
+   - Creating a loading page
 ------------------------------------------------------------------------- */
 ReactDom.render(<p>Loading...</p>, document.getElementById('app'));
 
-store.dispatch(startSetExpenses()).then(() => {
-	ReactDom.render(jsx, document.getElementById('app'));
+/* -------------------------------------------------------------------------
+   - Rendering control using firebase auth and history push to redirect
+   user to the right page
+------------------------------------------------------------------------- */
+firebase.auth().onAuthStateChanged((user) => {
+	if (user) {
+		// console.log('uid', user.uid);
+		store.dispatch(login(user.uid));
+		store.dispatch(startSetExpenses()).then(() => {
+			renderApp();
+
+			if (history.location.pathname === '/') {
+				history.push('/dashboard')
+			}
+		})
+	} else {
+		store.dispatch(logout());
+		renderApp();
+		history.push('/')
+	}
 });

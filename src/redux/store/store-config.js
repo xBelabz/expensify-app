@@ -1,10 +1,10 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import expensesReducer from '../reducers/expenses';
-import filtersReducer from '../reducers/filters';
-
 // Should Import "applyMiddleware" to apply
 // this piece of middleware "redux-thunk"
 import thunk from 'redux-thunk';
+import expensesReducer from '../reducers/expenses';
+import filtersReducer from '../reducers/filters';
+import authReducer from '../reducers/auth';
 
 // Preserving the redux dev tools after adding applyMiddleware as second argument
 // If we are using the dev tools we are going to make sure that correctly get set up
@@ -17,7 +17,8 @@ export default () => (
 	createStore(
 		combineReducers({
 			expenses: expensesReducer,
-			filters: filtersReducer
+			filters: filtersReducer,
+			auth: authReducer
 		}),
 
 		/* -------------------------------------------------------------------------
